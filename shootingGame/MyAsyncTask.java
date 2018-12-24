@@ -61,6 +61,8 @@ public class MyAsnycTask extends AsyncTask<Void,Void,String> {
         return sb.toString();
     }
 
+		//@params  {"name": "masa","password":"andy","time":30}
+
     public String getGET() throws IOException, JSONException {
         final String json = "{\"user\":{" +
                 "\"name\":\"masa\" " +

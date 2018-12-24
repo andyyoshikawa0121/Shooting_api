@@ -16,6 +16,9 @@ import java.net.URL;
 
 public class ShootingMoveKey extends JFrame{
 	public static int whetherClear = 2;
+	public static long timeStart;
+	public static long timeEnd;
+	public static double timePlay;
 	public ShootingMoveKey(){
 		whetherClear = 2;
 		setSize(800,500);
@@ -78,9 +81,8 @@ public class ShootingMoveKey extends JFrame{
 			System.out.print("Input your password: ");
 			line = reader.readLine();
 			this.password = line;
-			System.out.print("Input your time: ");
-			line = reader.readLine();
-			this.time = line;
+			timePlay = (timeEnd - timeStart)/1000.0;
+			this.time = Double.toString(timePlay);
 		}
 		String MakeJson(){
 			String sendData = "{\"name\":\""+name+"\" , \"password\":\""+password+"\" , \"time\":"+time+"}";
@@ -225,6 +227,7 @@ public class ShootingMoveKey extends JFrame{
 			addMouseMotionListener(this);
 			timer = new Timer(50, this);
 			timer.start();
+			timeStart = System.currentTimeMillis();
 		}
 
 		public void swapArray(int x[][],int y[][],int k,int point){
@@ -331,6 +334,7 @@ public class ShootingMoveKey extends JFrame{
 					//=============Game Clear=================
 					whetherClear = 1;
 					timer.stop();
+					timeEnd = System.currentTimeMillis();
 					dispose();
 					return;
 				}
