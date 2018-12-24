@@ -1,7 +1,13 @@
-<% @users.each do |user| %>
-	<li>
-		<ul>user id <%= user.id %></ul>
-		<ul>user name <%= user.name %></ul>
-		<ul>clear time <%= user.time %></ul>
-	</li>
-<% end %>
+<div class="show_users">
+	<h1 class="title_show_users">ランキング</h1>
+	<div class="container_show_users">
+		<% @users.each do |user| %>
+		<div class="each_users">
+			<li class="list_users">
+				<ul class="name_users"><%= user.name %></ul>
+				<ul class="time_users">clear time: <%= user.time %>sec.</ul>
+			</li>
+		</div>
+		<% end %>
+	</div>
+</div>
