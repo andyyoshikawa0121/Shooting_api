@@ -3,18 +3,26 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.awt.Image;
 
+
 public class ShootingMoveKey extends JFrame{
+	public static int whetherClear;
 	public ShootingMoveKey(){
 		setSize(800,500);
 		setTitle("Game Example");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		MyJPanel myJPanel= new MyJPanel();
+		MyJPanel myJPanel = new MyJPanel();
 		Container c = getContentPane();
 		c.add(myJPanel);
 		setVisible(true);
 	}
 	public static void main(String[] args){
 		new ShootingMoveKey();
+		if(whetherClear == 1){
+			System.out.println("==Game Clear==");
+		}else{
+			System.out.println("==Game End ==");
+		}
+
 	}
 	public class MyJPanel extends JPanel
 	implements ActionListener, MouseListener,
@@ -94,6 +102,7 @@ public class ShootingMoveKey extends JFrame{
 
 			enemy_width = image2.getWidth(this);
 			enemy_height = image2.getHeight(this);
+			whetherClear = 0;
 			setBackground(Color.black);
 			setFocusable(true);
 			addKeyListener(this);
@@ -120,14 +129,12 @@ public class ShootingMoveKey extends JFrame{
 					g.drawImage(image2,enemy_x[i],enemy_y[i],this);
 				}
 			}
-
 			g.setColor(Color.white);
 			for(int i=0;i<missile_flag;i++){
 				for(int j=0;j<num_of_my_missile;j++){
 					g.fillRect(my_missile_x[i][j],my_missile_y[i][j],2,5);
 				}
 			}
-
 			for(int i=0;i<n;i++){
 				if(enemy_missile_flag[i] == 1){
 					g.setColor(Color.white);
@@ -135,6 +142,8 @@ public class ShootingMoveKey extends JFrame{
 				}
 			}
 		}
+
+
 		public void actionPerformed(ActionEvent e){
 			Dimension dim = getSize();
 			for(int i=0;i<n;i++){
@@ -161,8 +170,11 @@ public class ShootingMoveKey extends JFrame{
 
 			for(int i=0;i<n;i++){
 				if(((enemy_missile_x[i]+2) >= my_x) && (enemy_missile_x[i] < my_x + player_width) && (enemy_missile_y[i] < (MY_Y + player_height)) && ((enemy_missile_y[i]+ 5) >= MY_Y)){
-					System.out.println("==Game End ==");
-					System.exit(0);
+					//========GameEnd=====
+					whetherClear = 0;
+					timer.stop();
+					dispose();
+					return;
 				}
 			}
 
@@ -201,8 +213,11 @@ public class ShootingMoveKey extends JFrame{
 					}
 				}
 				if(num_of_alive <= 0){
-					System.out.println("==Game Clear==");
-					System.exit(0);
+					//=============Game Clear=================
+					whetherClear = 1;
+					timer.stop();
+					dispose();
+					return;
 				}
 			}
 			repaint();
