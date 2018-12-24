@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+	protect_from_forgery :except => [:create]
+	protect_from_forgery :except => [:create_java]
 	def show
 		@users = User.all
 	end
@@ -18,7 +20,17 @@ class UsersController < ApplicationController
 			flash[:notice] = "登録できませんでした。"
 			render("users/new")
 		end
-
-
+	end
+	def create_java
+		@user = User.new(
+			name:params[:name],
+			time:params[:time],
+			password:params[:password]
+		)
+		if @user.save
+			render json: @user
+		else
+			render json: @user.errors, status: :unprocessable_entity
+		end
 	end
 end
