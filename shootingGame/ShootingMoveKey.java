@@ -2,11 +2,22 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 public class ShootingMoveKey extends JFrame{
-	public static int whetherClear;
+	public static int whetherClear = 2;
 	public ShootingMoveKey(){
+		whetherClear = 2;
 		setSize(800,500);
 		setTitle("Game Example");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -15,15 +26,119 @@ public class ShootingMoveKey extends JFrame{
 		c.add(myJPanel);
 		setVisible(true);
 	}
-	public static void main(String[] args){
-		new ShootingMoveKey();
-		if(whetherClear == 1){
-			System.out.println("==Game Clear==");
-		}else{
-			System.out.println("==Game End ==");
-		}
+	public static void main(String[] args) throws Exception{
+		BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in));
+		String line;
+		String apiUrl = "http://localhost:3000/users/create_java";
+		String getPost;
+		while(true){
+			new ShootingMoveKey();
+			//ゲームが終わるまで待機
+			while(whetherClear == 2){
+				Thread.sleep(1000);
+			}
 
+			if(whetherClear == 1){
+				System.out.println("==Game Clear==");
+				System.out.println("Do you want save record? y/n");
+				line = reader.readLine();
+				if(line.equals("y")){
+					JsonData jsonData = new JsonData();
+					jsonData.InputJson(reader);
+					String sendData = jsonData.MakeJson();
+					getPost = callPost(apiUrl,sendData);
+				}
+			}else{
+				System.out.println("==Game End ==");
+			}
+
+
+			System.out.println("Play Again? y/n");
+			line = reader.readLine();
+			if(!(line.equals("y"))){
+				System.out.println("Thank you for playing!!");
+				break;
+			}else{
+				System.out.println("Continue game after 3sec.");
+				Thread.sleep(3000);
+			}
+		}
 	}
+
+	public static class JsonData{
+		String name;
+		String password;
+		String time;
+		String line;
+
+		void InputJson(BufferedReader reader) throws Exception{
+			System.out.print("Input your name: ");
+			line = reader.readLine();
+			this.name = line;
+			System.out.print("Input your password: ");
+			line = reader.readLine();
+			this.password = line;
+			System.out.print("Input your time: ");
+			line = reader.readLine();
+			this.time = line;
+		}
+		String MakeJson(){
+			String sendData = "{\"name\":\""+name+"\" , \"password\":\""+password+"\" , \"time\":"+time+"}";
+			System.out.println("Create data below one.");
+			System.out.println(sendData);
+			return sendData;
+		}
+	}
+
+
+
+	public static String callPost(String strPostUrl,String formParam){
+		HttpURLConnection con = null;
+		StringBuffer result = new StringBuffer();
+
+		try{
+			URL url = new URL(strPostUrl);
+			con = (HttpURLConnection)url.openConnection();
+
+			con.setDoOutput(true);
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Accept-Language","jp");
+			con.setRequestProperty("Content-Type","application/json; charset=utf-8");
+			OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+			out.write(formParam);
+			out.close();
+			con.connect();
+			final int status = con.getResponseCode();
+			if(status == HttpURLConnection.HTTP_OK){
+				final InputStream in = con.getInputStream();
+				String encoding = con.getContentEncoding();
+				if(null == encoding){
+					encoding = "UTF-8";
+				}
+				final InputStreamReader inReader = new InputStreamReader(in,encoding);
+				final BufferedReader bufReader = new BufferedReader(inReader);
+				String line = null;
+
+				while((line = bufReader.readLine()) != null){
+					result.append(line);
+				}
+				bufReader.close();
+				inReader.close();
+				in.close();
+			}else{
+				System.out.println(status);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(con != null){
+				con.disconnect();
+			}
+		}
+		return result.toString();
+	}
+
+
 	public class MyJPanel extends JPanel
 	implements ActionListener, MouseListener,
 	MouseMotionListener,KeyListener
@@ -102,7 +217,7 @@ public class ShootingMoveKey extends JFrame{
 
 			enemy_width = image2.getWidth(this);
 			enemy_height = image2.getHeight(this);
-			whetherClear = 0;
+			whetherClear = 2;
 			setBackground(Color.black);
 			setFocusable(true);
 			addKeyListener(this);
