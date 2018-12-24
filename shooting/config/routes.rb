@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get "users" => "users#show"
   get "users/new" => "users#new"
+  post "users/create_java" => "users#create_java"
   post "users/create" => "users#create"
   get '/' => "home#top"
 
