@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "users" => "users#show"
+  get "users/new" => "users#new"
+  post "users/create" => "users#create"
   get '/' => "home#top"
 
   # The priority is based upon order of creation: first created -> highest priority.
