@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 	protect_from_forgery :except => [:create]
 	protect_from_forgery :except => [:create_java]
 	def show
-		@users = User.all.order(time: :asc)
+		@users = User.all.order(time: :asc).limit(3)
 	end
 	def new
 		@user = User.new

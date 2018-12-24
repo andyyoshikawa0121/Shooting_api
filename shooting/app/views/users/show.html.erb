@@ -1,13 +1,16 @@
 <div class="show_users">
-	<h1 class="title_show_users">ランキング</h1>
+	<h1 class="title_show_users">ランキング TOP3</h1>
 	<div class="container_show_users">
+		<% @ranking = 1 %>
 		<% @users.each do |user| %>
 		<div class="each_users">
 			<li class="list_users">
+				<ul class="ranking_users">Rank<%= @ranking %></ul>
 				<ul class="name_users"><%= user.name %></ul>
 				<ul class="time_users">clear time: <%= user.time %>sec.</ul>
 			</li>
 		</div>
+		<% @ranking = @ranking + 1 %>
 		<% end %>
 	</div>
 </div>
